@@ -1,0 +1,32 @@
+# install
+    $ npm i amqplib     // RabbitMQ package for node
+
+    run the RabbitMQ with docker
+
+
+# RabbitMQ basic
+
+    producer -> exchange -> binding key -> queue -> consumer
+
+    - producer: make the message
+    - exchange: receive message from producer and forward to queue based on binding key
+            4 type exchange
+                1. direct
+                2. topic
+                3. fanout
+                4. headers
+    
+    - binding key: 
+
+
+# RabbitMQ panel
+    http://localhost:15672 
+
+    username: guest
+    password: guest
+
+    - view the queue messages
+        queues and streams -> name of queue -> get messages
+        
+        - when i product msg i will see the queue msg 
+        - after consume the msg the queue will be empty

@@ -1,0 +1,25 @@
+{
+  "name": "rabbitmq-learn",
+  "version": "1.0.0",
+  "description": "Simple and runnable RabbitMQ producer and consumer examples using Node.js.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Forhadx/rabbitmq-learn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Forhadx/rabbitmq-learn/issues"
+  },
+  "homepage": "https://github.com/Forhadx/rabbitmq-learn#readme",
+  "dependencies": {
+    "amqplib": "^2.0.1",
+    "dotenv": "^18.0.3"
+  }
+}
