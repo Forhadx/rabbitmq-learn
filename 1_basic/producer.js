@@ -24,7 +24,9 @@ async function sendMail() {
     await channel.assertQueue(queueName, { durable: true }); // make queue
     await channel.bindQueue(queueName, exchange, routingKey); // make binding between exchange and queue with routing key
 
-    channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(msg))); // publish the msg
+    channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(msg)), {
+      persistent: true, // 👈 this persists the MESSAGE to disk
+    }); // publish the msg
     console.log(`[x] Sent ${msg}`);
 
     setTimeout(() => {

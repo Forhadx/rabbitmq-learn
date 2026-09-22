@@ -2,9 +2,10 @@ services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: express_rabbitmq
+    hostname: my-rabbitmq-host # this host name identify then prev volume, otherwise new container id can't recognize the volume
     restart: always
     ports:
-      - "5672:5672"   # AMQP protocol port
+      - "5672:5672" # AMQP protocol port
       - "15672:15672" # RabbitMQ Management Web UI
     environment:
       RABBITMQ_DEFAULT_USER: guest
@@ -13,7 +14,7 @@ services:
       # - rabbitmq_data:/var/lib/rabbitmq
       - ./storage/rabbitmq:/var/lib/rabbitmq
     healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
