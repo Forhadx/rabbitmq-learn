@@ -3,11 +3,12 @@ require("dotenv").config();
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL;
 
-const EXCHANGE    = "mail_exchange";
+const EXCHANGE = "mail_exchange";
 const ROUTING_KEY = "send_mail";
-const QUEUE       = "mail_queue";
-const DEAD_QUEUE  = "mail_dead_letter_queue";
+const QUEUE = "mail_queue";
+const DEAD_QUEUE = "mail_dead_letter_queue";
 const MAX_RETRIES = 3;
+const PREFETCH = 2;
 
 async function setup(channel) {
   await channel.assertExchange(EXCHANGE, "direct", { durable: true });
@@ -20,7 +21,7 @@ async function connect() {
   const connection = await amqp.connect(RABBITMQ_URL);
   const channel = await connection.createChannel();
   await setup(channel);
-  channel.prefetch(1);
+  channel.prefetch(PREFETCH);
   return { connection, channel };
 }
 
@@ -32,9 +33,14 @@ async function connectConfirm() {
 }
 
 function publish(channel, content) {
-  const ok = channel.publish(EXCHANGE, ROUTING_KEY, Buffer.from(JSON.stringify(content)), {
-    persistent: true,
-  });
+  const ok = channel.publish(
+    EXCHANGE,
+    ROUTING_KEY,
+    Buffer.from(JSON.stringify(content)),
+    {
+      persistent: true,
+    },
+  );
   if (!ok) throw new Error("Publish failed: channel buffer is full");
 }
 
@@ -48,7 +54,7 @@ function retry(channel, content, retryCount) {
 function getRetryCount(headers) {
   const raw = headers?.["x-retry-count"];
   // amqplib returns header values as { value, type } objects
-  return typeof raw === "object" ? raw?.value ?? 0 : raw ?? 0;
+  return typeof raw === "object" ? (raw?.value ?? 0) : (raw ?? 0);
 }
 
 function sendToDeadQueue(channel, content, retryCount, reason) {
@@ -58,4 +64,13 @@ function sendToDeadQueue(channel, content, retryCount, reason) {
   });
 }
 
-module.exports = { connect, connectConfirm, publish, retry, sendToDeadQueue, getRetryCount, MAX_RETRIES, QUEUE };
+module.exports = {
+  connect,
+  connectConfirm,
+  publish,
+  retry,
+  sendToDeadQueue,
+  getRetryCount,
+  MAX_RETRIES,
+  QUEUE,
+};
