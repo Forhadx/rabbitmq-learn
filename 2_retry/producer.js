@@ -17,22 +17,22 @@ async function sendMail() {
       text: "This is a test message",
     };
 
-    // direct = exchange type, durable = false(if queue is deleted then queue will also deleted), true(if queue is deleted then queue will not be deleted)
     await channel.assertExchange(exchange, "direct", {
-      durable: true, // true, false
-    }); // make exchange
-    await channel.assertQueue(queueName, { durable: true }); // make queue
-    await channel.bindQueue(queueName, exchange, routingKey); // make binding between exchange and queue with routing key
+      durable: true,
+    });
+    await channel.assertQueue(queueName, { durable: true });
+    await channel.bindQueue(queueName, exchange, routingKey);
 
     channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(msg)), {
-      persistent: true, // 👈 this persists the MESSAGE to disk
-    }); // publish the msg
+      persistent: true,
+    });
     console.log(`[x] Sent ${msg}`);
 
-    // close the channel
-    await channel.waitForConfirms(); // wait for rabbitmq broker to ACK the message
+    
+    await channel.waitForConfirms(); 
     await channel.close();
     await connection.close();
+
   } catch (err) {
     console.log(err);
   }

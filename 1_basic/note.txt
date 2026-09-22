@@ -31,6 +31,10 @@
         - when i product msg i will see the queue msg 
         - after consume the msg the queue will be empty
 
+# store the data
+   durable: true   // Survives broker restart — definitions are kept
+
+   persistent: true  // Survives broker restart — message content is kept on disk
 
 
 -----------------------------------------------------------

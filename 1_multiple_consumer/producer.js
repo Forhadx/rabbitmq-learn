@@ -5,7 +5,7 @@ async function sendMail() {
   try {
     let connection = await amqp.connect(process.env.RABBITMQ_URL);
     console.log("RabbitMQ connected");
-    let channel = await connection.createChannel();
+    let channel = await connection.createConfirmChannel();
 
     const exchange = "mail_exchange";
 
@@ -37,7 +37,8 @@ async function sendMail() {
     channel.publish(
       exchange,
       supplierRoutingKey,
-      Buffer.from(JSON.stringify(msg))
+      Buffer.from(JSON.stringify(msg)),
+      { persistent: true }
     );
     console.log(`[x] Sent supplier msg ${msg}`);
 
@@ -45,14 +46,14 @@ async function sendMail() {
     channel.publish(
       exchange,
       customerRoutingKey,
-      Buffer.from(JSON.stringify(msg))
+      Buffer.from(JSON.stringify(msg)),
+      { persistent: true }
     );
     console.log(`[x] Sent customer msg ${msg}`);
 
-    setTimeout(() => {
-      connection.close();
-      process.exit(0);
-    }, 500);
+    await channel.waitForConfirms(); // wait for rabbitmq broker to ACK the message
+    await channel.close();
+    await connection.close();
   } catch (err) {
     console.log(err);
   }
