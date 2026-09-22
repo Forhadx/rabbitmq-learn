@@ -7,14 +7,14 @@ async function sendMail() {
     console.log("RabbitMQ connected");
     let channel = await connection.createChannel();
 
-    const queueName = "mail_queue";
+    const supplierQueueName = "supplier_queue";
 
-    await channel.assertQueue(queueName, { durable: true }); // make/get queue
+    await channel.assertQueue(supplierQueueName, { durable: false });
 
-    await channel.consume(queueName, (msg) => {
+    await channel.consume(supplierQueueName, (msg) => {
       if (msg !== null) {
-        console.log("receive msg: ", JSON.parse(msg.content));
-        channel.ack(msg); // message acknowledgment mean i get the msg to inform the queue
+        console.log("supplier receive msg: ", JSON.parse(msg.content));
+        channel.ack(msg); 
       }
     });
   } catch (err) {

@@ -19,9 +19,9 @@ async function sendMail() {
 
     // direct = exchange type, durable = false(if queue is deleted then queue will also deleted), true(if queue is deleted then queue will not be deleted)
     await channel.assertExchange(exchange, "direct", {
-      durable: false,
+      durable: true, // true, false
     }); // make exchange
-    await channel.assertQueue(queueName, { durable: false }); // make queue
+    await channel.assertQueue(queueName, { durable: true }); // make queue
     await channel.bindQueue(queueName, exchange, routingKey); // make binding between exchange and queue with routing key
 
     channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(msg))); // publish the msg

@@ -30,3 +30,11 @@
         
         - when i product msg i will see the queue msg 
         - after consume the msg the queue will be empty
+
+
+
+-----------------------------------------------------------
+
+# current project structure
+
+    sendMail producer -> mail_exchange(direct) -> send_mail(routing key) -> mail_queue -> mail consumer

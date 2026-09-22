@@ -1,0 +1,9 @@
+
+# current project structure
+
+    sendMail producer -> mail_exchange(direct) 
+                            |-> supplier_mail(routing key) -> supplier_queue ->  supplier consumer
+                            |-> customer_mail(routing key) -> customer_queue ->  customer consumer
+
+        
+        send msg both supplier & customer with multiple queue 
